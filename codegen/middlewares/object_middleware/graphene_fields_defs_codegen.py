@@ -62,7 +62,8 @@ class GrapheneFieldsDefCodegen:
                 identifier,
                 OptionalIdentifier,
         ):
-            return f'{self.g}.Field(type_={identifier.wrapped.to_string()}'
+            return f'{self.g}.Field(type_={identifier.wrapped.to_string()})'
+        return f'{self.g}.Field(required=True, type_={identifier.to_string()})'
 
     def generate_code(self) -> str:
         pass
