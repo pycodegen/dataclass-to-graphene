@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
-
 from typing import Dict
 
 from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
+from codegen.middlewares.object_middleware.identifier_to_graphql_type import identifier_to_graphql_type
 
 
 @dataclass
@@ -27,44 +27,10 @@ class GrapheneFieldsDefCodegen:
             name: str,
             identifier: BaseIdentifier,
     ) -> str:
-
-
-        if isinstance(
-                identifier,
-                ListIdentifier,
-        ):
-            """
-            List[Optional[List[int]]]
-            --> g.List(
-                    required=True
-                    of_type=g.List(
-                        required=False
-                        of_type=g.List(
-                            required=True
-                            of_type=g.Int
-                            
-            List[Optional[int]]
-            --> g.List(
-                    required=True
-                    of_type=g.g.Int
-
-            """
-            actual_ident = identifier.wrapped
-            head = ''.join([
-                f'{self.g}.List(required={not is_optional}, of_type='
-                for is_optional in identifier.is_nullable_list
-            ])
-            tail = ')' * len(identifier.is_nullable_list)
-            if not isinstance(actual_ident, OptionalIdentifier):
-                return f'{head}{self.g}.NonNull({actual_ident.to_string()}){tail}'
-            return f'{head}{actual_ident.wrapped.to_string()}{tail}'
-
-        if isinstance(
-                identifier,
-                OptionalIdentifier,
-        ):
-            return f'{self.g}.Field(type_={identifier.wrapped.to_string()})'
-        return f'{self.g}.Field(required=True, type_={identifier.to_string()})'
+        graphql_type_str = identifier_to_graphql_type(
+            identifier=identifier,
+        )
+        return f'{self.g}.Field({graphql_type_str})'
 
     def generate_code(self) -> str:
         body = '\n'.join([
