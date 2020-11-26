@@ -1,6 +1,7 @@
 from codegen.idenfitier.BuiltinIdentifiers import BaseBuiltinIdentifier
 from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGrapheneObjectIdentifier
 from codegen.idenfitier.ListIdentifier import ListIdentifier
+from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
 
 
@@ -11,9 +12,7 @@ def gencode_field_from_original(
         #
         field_ident: BaseIdentifier,
 ) -> str:
-    """
-
-    """
+    # hope python gets pattern-matching...
     if isinstance(field_ident, ListIdentifier):
         actual_ident = field_ident.wrapped
         if isinstance(actual_ident, BaseBuiltinIdentifier):
@@ -28,7 +27,13 @@ def gencode_field_from_original(
                 + conversion_func_body \
                 + conversion_func_tail
             return f'{conversion_func}({field_code_str})'
+    if isinstance(field_ident, OptionalIdentifier):
+        field_ident = field_ident.wrapped
     if isinstance(field_ident, BaseBuiltinIdentifier):
         return field_code_str
     if isinstance(field_ident, GeneratedGrapheneObjectIdentifier):
         return f'{field_ident.to_string()}._from_original({field_code_str})'
+    raise RuntimeError(
+        'Could not generate field for Identifier: ',
+        field_ident,
+    )
