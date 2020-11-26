@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 from typing import Dict
 
+from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
@@ -50,7 +51,7 @@ class GrapheneFieldsDefCodegen:
             """
             actual_ident = identifier.wrapped
             head = ''.join([
-                f'{self.g}.List(required={is_optional}, of_type='
+                f'{self.g}.List(required={not is_optional}, of_type='
                 for is_optional in identifier.is_nullable_list
             ])
             tail = ')' * len(identifier.is_nullable_list)
@@ -66,4 +67,28 @@ class GrapheneFieldsDefCodegen:
         return f'{self.g}.Field(required=True, type_={identifier.to_string()})'
 
     def generate_code(self) -> str:
-        pass
+        body = '\n'.join([
+            f'{key} = {value}'
+            for key, value in self.field_codestring_map.items()
+        ])
+        return body
+
+
+if __name__ == '__main__':
+    a = GrapheneFieldsDefCodegen()
+    a.add_field('int_test', int_identifier)
+    a.add_field('list_optional', ListIdentifier(
+        is_nullable_list=[True, False],
+        wrapped=int_identifier,
+    ))
+
+    a.add_field('list_of_optional', ListIdentifier(
+        is_nullable_list=[False],
+        wrapped=OptionalIdentifier(wrapped=float_identifier),
+    ))
+
+    a.add_field('list_of_required', ListIdentifier(
+        is_nullable_list=[False],
+        wrapped=int_identifier,
+    ))
+    print(a.generate_code())
