@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
@@ -11,10 +11,11 @@ from codegen.GeneratedFile.generated_file_pool import GeneratedFilePool
 from codegen.ModulePath import ModulePath
 from codegen.GeneratedFile.MutationsModule import GeneratedMutationsFile
 from codegen.ModulePath.RootModulePath import RootModulePath
-from codegen.flags.is_mutation import is_mutation_flag
-from codegen.flags.is_query import is_query_flag
-from codegen.flags.is_subscription import is_subscription_flag
+from codegen.extractor_flags.is_mutation import is_mutation_flag
+from codegen.extractor_flags.is_query import is_query_flag
+from codegen.extractor_flags.is_subscription import is_subscription_flag
 from codegen.idenfitier.__base__ import BaseIdentifier
+from codegen.middleware_flags.__base__ import BaseMiddlewareFlag
 from codegen.middlewares.__base__ import BaseMiddleware
 from codegen.middlewares.builtins_middleware import BuiltinsMiddleware
 from codegen.middlewares.list_middleware import ListMiddleware
@@ -59,12 +60,17 @@ class Codegen(BaseCodegen):
             is_query_flag,
         })(query_func)
 
-    def _process(self, node: NodeType) -> BaseIdentifier:
+    def _process(
+            self,
+            node: NodeType,
+            flags: Set[BaseMiddlewareFlag],
+    ) -> BaseIdentifier:
         for middleware in self.middlewares:
             maybe_identifier = middleware.process(
                 node=node,
                 codegen=self,
+                flags=flags,
             )
             if maybe_identifier:
                 return maybe_identifier
-
+        raise RuntimeError('Could not get identifier for: ', node)

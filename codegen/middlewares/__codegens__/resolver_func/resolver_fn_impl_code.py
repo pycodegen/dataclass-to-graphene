@@ -1,11 +1,13 @@
 import textwrap
 from typing import Dict
 
+from codegen.ModulePath import ModulePath
 from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
+from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGrapheneObjectIdentifier
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.object_middleware.gencode_field_from_original import gencode_field_from_original
+from codegen.middlewares.__utils__.field_conversion_codegens import field_from_original
 from utils.lang.strip_margin import strip_margin
 
 
@@ -25,7 +27,7 @@ def get_resolver_fn_impl_code(
          in args_idents.keys()]
     )
     # _from_original for return_ident...
-    return_value_code_str = gencode_field_from_original(
+    return_value_code_str = field_from_original(
         field_code_str='result_original',
         field_ident=return_ident,
     )
@@ -50,6 +52,22 @@ if __name__ == '__main__':
     print(get_resolver_fn_impl_code(
         resolver_name='resolved_field_name',
         return_ident=OptionalIdentifier(wrapped=int_identifier),
+        args_idents={
+            'hello': ListIdentifier(
+                is_nullable_list=[True, False],
+                wrapped=float_identifier,
+            )
+        },
+    ))
+    print('\n\n------\n\n')
+    print(get_resolver_fn_impl_code(
+        resolver_name='resolved_field_name',
+        return_ident=OptionalIdentifier(
+            wrapped=GeneratedGrapheneObjectIdentifier(
+                module=ModulePath('graphene_generated.hello'),
+                name='User',
+            )
+        ),
         args_idents={
             'hello': ListIdentifier(
                 is_nullable_list=[True, False],

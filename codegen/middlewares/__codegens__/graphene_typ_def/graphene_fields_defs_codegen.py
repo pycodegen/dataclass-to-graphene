@@ -1,17 +1,23 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
+from codegen.idenfitier.BuiltinIdentifiers import (
+    int_identifier,
+    float_identifier,
+)
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.object_middleware.identifier_to_graphql_type import identifier_to_graphql_type
+from .identifier_to_graphene_typ import (
+    identifier_to_graphene_typ,
+)
 
 
 @dataclass
 class GrapheneFieldsDefCodegen:
     field_codestring_map: Dict[str, str] = field(default_factory=dict)
     g: str = 'graphene'
+
     def add_field(
             self,
             name: str,
@@ -27,7 +33,7 @@ class GrapheneFieldsDefCodegen:
             name: str,
             identifier: BaseIdentifier,
     ) -> str:
-        graphql_type_str = identifier_to_graphql_type(
+        graphql_type_str = identifier_to_graphene_typ(
             identifier=identifier,
         )
         return f'{self.g}.Field({graphql_type_str})'

@@ -1,11 +1,13 @@
 from codegen.ModulePath import ModulePath
-from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGrapheneObjectIdentifier
+from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import (
+    GeneratedGrapheneObjectIdentifier,
+)
 from codegen.idenfitier.ListIdentifier import ListIdentifier
-from codegen.middlewares.object_middleware import FromOriginalTypeCodegen
+from .from_original_obj import FromOriginalObjCodegen
 
 
 if __name__ == '__main__':
-    a = FromOriginalTypeCodegen(
+    a = FromOriginalObjCodegen(
         field_codestring_map={
             'a': 'b',
             'aaa': '123',
@@ -14,7 +16,7 @@ if __name__ == '__main__':
     print(a.print_code())
     print('\n\n-------\n\n')
 
-    b = FromOriginalTypeCodegen()
+    b = FromOriginalObjCodegen()
     b.add_field(
         'hello',
         ListIdentifier(

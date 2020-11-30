@@ -5,7 +5,8 @@ from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
 
 
-def gencode_field_from_original(
+# TODO: can be generalized to include `to_original`...
+def field_from_original(
         field_code_str: str,
         # --> string to access the 'field'
         #       eg. 'original.user'

@@ -4,8 +4,8 @@ from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 
 from codegen.BaseCodegen import BaseCodegen
 from codegen.idenfitier.__base__ import BaseIdentifier
-from .get_resolver_fn_field_code import get_resolver_fn_field_code
-from codegen.middlewares.object_middleware.process_resolver_funcs.get_resolver_fn_impl_code import \
+from .resolver_fn_field_code import get_resolver_fn_field_code
+from codegen.middlewares.__utils__.resolver_func_codegens.resolver_fn_impl_code import \
     get_resolver_fn_impl_code
 
 
@@ -35,24 +35,31 @@ def process_resolver_funcs(
     }
     for name, raw_resolver in raw_resolvers.items():
         # maybe: get identifiers for resolvers here?
-        return_ident = codegen._process(
-            raw_resolver.return_type
-        )
 
-        # TODO: filter-out 'context' or any other 'special' args
-        args_idents: Dict[str, BaseIdentifier] = {
-            args_name: codegen._process(args_node)
-            for args_name, args_node in raw_resolver.params.items()
-        }
-
-        resolver_fn_field_code = get_resolver_fn_field_code(
-            args_idents=args_idents,
-            return_ident=return_ident,
-        )
-
-        resolver_fn_impl_code = get_resolver_fn_impl_code(
-            resolver_name=name,
-            return_ident=return_ident,
-            args_idents=args_idents,
-        )
     # return resolver_codes
+
+def process_resolver_func(
+        name,
+        raw_resolver,
+        codegen: BaseCodegen,
+):
+    return_ident = codegen._process(
+        raw_resolver.return_type
+    )
+
+    # TODO: filter-out 'context' or any other 'special' args
+    args_idents: Dict[str, BaseIdentifier] = {
+        args_name: codegen._process(args_node)
+        for args_name, args_node in raw_resolver.params.items()
+    }
+
+    resolver_fn_field_code = get_resolver_fn_field_code(
+        args_idents=args_idents,
+        return_ident=return_ident,
+    )
+
+    resolver_fn_impl_code = get_resolver_fn_impl_code(
+        resolver_name=name,
+        return_ident=return_ident,
+        args_idents=args_idents,
+    )

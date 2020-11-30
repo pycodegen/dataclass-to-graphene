@@ -4,7 +4,7 @@ from typing import Dict
 from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.object_middleware.identifier_to_graphql_type import identifier_to_graphql_type
+from codegen.middlewares.__utils__.identifier_to_graphql_type import identifier_to_graphql_type
 from utils.lang.strip_margin import strip_margin
 
 

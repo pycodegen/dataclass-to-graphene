@@ -4,7 +4,7 @@ from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
 
 
-def identifier_to_graphql_type(
+def identifier_to_graphene_typ(
         identifier: BaseIdentifier,
         _graphene: str = 'graphene',
 ) -> str:
@@ -49,24 +49,24 @@ def identifier_to_graphql_type(
 if __name__ == '__main__':
     # TODO: make proper tests! (use python ast module)
     print(
-        identifier_to_graphql_type(int_identifier)
+        identifier_to_graphene_typ(int_identifier)
     )
     print(
-        identifier_to_graphql_type(ListIdentifier(
+        identifier_to_graphene_typ(ListIdentifier(
             is_nullable_list=[True, False],
             wrapped=int_identifier,
         ))
     )
 
     print(
-        identifier_to_graphql_type(ListIdentifier(
+        identifier_to_graphene_typ(ListIdentifier(
             is_nullable_list=[False],
             wrapped=OptionalIdentifier(wrapped=float_identifier),
         ))
     )
 
     print(
-        identifier_to_graphql_type(ListIdentifier(
+        identifier_to_graphene_typ(ListIdentifier(
             is_nullable_list=[False],
             wrapped=int_identifier,
         ))

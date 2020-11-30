@@ -1,16 +1,13 @@
 from codegen.GeneratedFile import GeneratedFile
 from codegen.idenfitier.IdentifierWithImport import IdentifierWithImport
-from codegen.idenfitier.ListIdentifier import ListIdentifier
-from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
-from codegen.idenfitier.__base__ import BaseIdentifier
+from codegen.idenfitier.__base__ import BaseIdentifier, WrappedIdentifier
 
 
-def process_imports(
+def process_import(
         generated_file: GeneratedFile,
         identifier: BaseIdentifier,
 ):
-    if isinstance(identifier, OptionalIdentifier) \
-            or isinstance(identifier, ListIdentifier):
+    if isinstance(identifier, WrappedIdentifier):
         a = identifier.wrapped
         if isinstance(a, IdentifierWithImport):
             generated_file.add_import(a.module)

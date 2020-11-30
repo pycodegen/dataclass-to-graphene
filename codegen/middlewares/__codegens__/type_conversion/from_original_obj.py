@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from typing import Dict
 
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.object_middleware.gencode_field_from_original import gencode_field_from_original
 from utils.lang.strip_margin import strip_margin
+from .field_from_original import field_from_original
 
 """
 generated output:
@@ -20,7 +20,7 @@ class SomeGrapheneObject(graphene.Object):
 
 
 @dataclass
-class FromOriginalTypeCodegen:
+class FromOriginalObjCodegen:
     field_codestring_map: Dict[str, str] = field(default_factory=dict)
     _orig = str = 'original'
 
@@ -29,7 +29,7 @@ class FromOriginalTypeCodegen:
             name: str,
             identifier: BaseIdentifier,
     ):
-        self.field_codestring_map[name] = gencode_field_from_original(
+        self.field_codestring_map[name] = field_from_original(
             field_code_str=f'{self._orig}.{name}',
             field_ident=identifier,
         )

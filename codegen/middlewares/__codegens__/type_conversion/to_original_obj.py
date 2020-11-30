@@ -1,17 +1,17 @@
 from dataclasses import dataclass, field
-
 from typing import Dict
 
 from codegen.idenfitier.BuiltinIdentifiers import BaseBuiltinIdentifier
 from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGrapheneObjectIdentifier
-from codegen.idenfitier.IdentifierWithImport import IdentifierWithImport
 from codegen.idenfitier.ListIdentifier import ListIdentifier
+from codegen.idenfitier.OriginalObjIdentifier import OriginalObjIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
 from utils.lang.strip_margin import strip_margin
 
+
 @dataclass
-class ToOriginalType:
-    original_type_identifier: IdentifierWithImport
+class ToOriginalObjCodegen:
+    original_type_identifier: OriginalObjIdentifier
     field_codestring_map: Dict[str, str] = field(default_factory=dict)
 
     def add_field(
@@ -37,8 +37,8 @@ class ToOriginalType:
             ):
                 return f'self.{name}'
             if isinstance(
-                actual_identifier,
-                GeneratedGrapheneObjectIdentifier,
+                    actual_identifier,
+                    GeneratedGrapheneObjectIdentifier,
             ):
                 list_dimension = len(identifier.is_nullable_list)
                 conversion_func_head = 'map_list(' * list_dimension
