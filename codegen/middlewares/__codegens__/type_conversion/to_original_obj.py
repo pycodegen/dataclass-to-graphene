@@ -40,7 +40,7 @@ class ToOriginalObjCodegen:
                     actual_identifier,
                     GeneratedGrapheneObjectIdentifier,
             ):
-                list_dimension = len(identifier.is_nullable_list)
+                list_dimension = len(identifier.is_optional_list)
                 conversion_func_head = 'map_list(' * list_dimension
                 conversion_func_body = f'{actual_identifier.to_string()}._to_original'
                 conversion_func_tail = ')' * list_dimension

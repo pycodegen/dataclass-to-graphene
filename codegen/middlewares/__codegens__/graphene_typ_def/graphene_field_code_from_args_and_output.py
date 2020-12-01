@@ -1,14 +1,33 @@
+
+
 import textwrap
 from typing import Dict
 
 from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.__utils__.identifier_to_graphql_type import identifier_to_graphql_type
+from codegen.middlewares.__codegens__.graphene_typ_def import (
+    identifier_to_graphene_typ,
+)
 from utils.lang.strip_margin import strip_margin
 
+"""
+common for Subscriptions + Queries!
 
-def get_resolver_fn_field_code(
+eg.
+`subscribe_todos(self, info, todo_filter: ..)`
+`resolve_todos(self, info, todo_filter: ...)`
+
+both require graphene field:
+
+`todos = graphene.Field( type_: TimeOfDay, args: { ... } )`
+         -----------------------------------------------
+                      |
+                      ----- graphene_field_code_from_args_and_output
+"""
+
+
+def graphene_field_code_from_args_and_output(
         args_idents: Dict[str, BaseIdentifier],
         return_ident: BaseIdentifier,
         _g: str = 'graphene',
@@ -16,7 +35,7 @@ def get_resolver_fn_field_code(
     args_codes = {
         arg_name: strip_margin(
             f'''{_g}.Argument(
-                |    type_={identifier_to_graphql_type(arg_ident)},
+                |    type_={identifier_to_graphene_typ(arg_ident)},
                 |)'''
         )
         for arg_name, arg_ident in args_idents.items()
@@ -25,7 +44,7 @@ def get_resolver_fn_field_code(
         f"'{arg_name}': {arg_code},"
         for arg_name, arg_code in args_codes.items()
     ])
-    return_code_str = identifier_to_graphql_type(return_ident)
+    return_code_str = identifier_to_graphene_typ(return_ident)
     return strip_margin(
         f'''graphene.Field(
             |    type_={return_code_str}, 
@@ -38,7 +57,7 @@ def get_resolver_fn_field_code(
 
 if __name__ == '__main__':
     print(
-        get_resolver_fn_field_code(
+        graphene_field_code_from_args_and_output(
             {
                 'some_int': int_identifier,
                 'some_optional_int': OptionalIdentifier(wrapped=int_identifier)

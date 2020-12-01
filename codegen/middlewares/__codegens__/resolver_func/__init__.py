@@ -1,12 +1,15 @@
-from typing import Dict
+from typing import Dict, Set
 
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 
 from codegen.BaseCodegen import BaseCodegen
 from codegen.idenfitier.__base__ import BaseIdentifier
-from .resolver_fn_field_code import get_resolver_fn_field_code
-from codegen.middlewares.__utils__.resolver_func_codegens.resolver_fn_impl_code import \
-    get_resolver_fn_impl_code
+# from .resolver_fn_field_code import graphene_field_code_from_args_and_output
+# from codegen.middlewares.__utils__.resolver_func_codegens.resolver_fn_impl_code import \
+#     get_resolver_fn_impl_code
+from codegen.middleware_flags import BaseMiddlewareFlag, is_input, is_output
+from codegen.middlewares.__codegens__.graphene_typ_def.graphene_field_code_from_args_and_output import graphene_field_code_from_args_and_output
+from .resolver_fn_impl_code import get_resolver_fn_impl_code
 
 
 def get_resolver_name(fn_name: str) -> str:
@@ -24,36 +27,53 @@ def is_resolver_name(fn_name: str) -> bool:
 # TODO: extract out (can be used by subscriptions)
 
 
-def process_resolver_funcs(
-        maybe_resolvers: Dict[str, FunctionFound],
-        codegen: BaseCodegen,
-):
-    raw_resolvers: Dict[str, FunctionFound] = {
+def get_resolver_funcs(
+    maybe_resolvers: Dict[str, FunctionFound],
+) -> Dict[str, FunctionFound]:
+    return {
         get_resolver_name(fn_name): value
         for fn_name, value in maybe_resolvers.items()
         if is_resolver_name(fn_name)
     }
+
+
+def process_resolver_funcs(
+        maybe_resolvers: Dict[str, FunctionFound],
+        codegen: BaseCodegen,
+        flags: Set[BaseMiddlewareFlag],
+):
+    raw_resolvers = get_resolver_funcs(maybe_resolvers)
     for name, raw_resolver in raw_resolvers.items():
         # maybe: get identifiers for resolvers here?
 
+
     # return resolver_codes
 
+# get_resolver_fn_args_idents
+# get_resolver_fn_return_ident
 def process_resolver_func(
         name,
         raw_resolver,
         codegen: BaseCodegen,
+        flags: Set[BaseMiddlewareFlag],
 ):
+    input_flags = flags | { is_input }
+    output_flags = flags | { is_output }
     return_ident = codegen._process(
-        raw_resolver.return_type
+        node=raw_resolver.return_type,
+        flags=output_flags,
     )
 
     # TODO: filter-out 'context' or any other 'special' args
     args_idents: Dict[str, BaseIdentifier] = {
-        args_name: codegen._process(args_node)
+        args_name: codegen._process(
+            node=args_node,
+            flags=input_flags,
+        )
         for args_name, args_node in raw_resolver.params.items()
     }
 
-    resolver_fn_field_code = get_resolver_fn_field_code(
+    resolver_fn_field_code = graphene_field_code_from_args_and_output(
         args_idents=args_idents,
         return_ident=return_ident,
     )
@@ -63,3 +83,5 @@ def process_resolver_func(
         return_ident=return_ident,
         args_idents=args_idents,
     )
+
+    return

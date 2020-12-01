@@ -32,7 +32,7 @@ class ListMiddleware(BaseMiddleware):
             flags=flags,
         )
         return ListIdentifier(
-            is_nullable_list=is_nullable_list,
+            is_optional_list=is_nullable_list,
             wrapped=identifier,
         )
 

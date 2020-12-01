@@ -16,5 +16,3 @@ class IdentifierWithImport(BaseIdentifier, metaclass=abc.ABCMeta):
         self.module = module
         self.name = name
 
-    def to_string(self) -> str:
-        return f'{self.module}.{self.name}'

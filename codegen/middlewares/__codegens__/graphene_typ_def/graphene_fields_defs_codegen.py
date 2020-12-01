@@ -50,17 +50,17 @@ if __name__ == '__main__':
     a = GrapheneFieldsDefCodegen()
     a.add_field('int_test', int_identifier)
     a.add_field('list_optional', ListIdentifier(
-        is_nullable_list=[True, False],
+        is_optional_list=[True, False],
         wrapped=int_identifier,
     ))
 
     a.add_field('list_of_optional', ListIdentifier(
-        is_nullable_list=[False],
+        is_optional_list=[False],
         wrapped=OptionalIdentifier(wrapped=float_identifier),
     ))
 
     a.add_field('list_of_required', ListIdentifier(
-        is_nullable_list=[False],
+        is_optional_list=[False],
         wrapped=int_identifier,
     ))
     print(a.generate_code())

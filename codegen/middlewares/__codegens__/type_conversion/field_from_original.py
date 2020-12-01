@@ -19,7 +19,7 @@ def field_from_original(
         if isinstance(actual_ident, BaseBuiltinIdentifier):
             return field_code_str
         if isinstance(actual_ident, GeneratedGrapheneObjectIdentifier):
-            list_dimension = len(field_ident.is_nullable_list)
+            list_dimension = len(field_ident.is_optional_list)
             conversion_func_head = 'map_list(' * list_dimension
             conversion_func_body = f'{actual_ident.to_string()}._from_original'
             conversion_func_tail = ')' * list_dimension

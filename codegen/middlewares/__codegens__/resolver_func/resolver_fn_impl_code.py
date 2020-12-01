@@ -7,7 +7,7 @@ from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGraphe
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.__utils__.field_conversion_codegens import field_from_original
+from codegen.middlewares.__codegens__.type_conversion import field_from_original
 from utils.lang.strip_margin import strip_margin
 
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         return_ident=OptionalIdentifier(wrapped=int_identifier),
         args_idents={
             'hello': ListIdentifier(
-                is_nullable_list=[True, False],
+                is_optional_list=[True, False],
                 wrapped=float_identifier,
             )
         },
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         ),
         args_idents={
             'hello': ListIdentifier(
-                is_nullable_list=[True, False],
+                is_optional_list=[True, False],
                 wrapped=float_identifier,
             )
         },

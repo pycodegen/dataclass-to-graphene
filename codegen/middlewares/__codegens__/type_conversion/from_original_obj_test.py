@@ -3,8 +3,9 @@ from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import (
     GeneratedGrapheneObjectIdentifier,
 )
 from codegen.idenfitier.ListIdentifier import ListIdentifier
-from .from_original_obj import FromOriginalObjCodegen
-
+from codegen.middlewares.__codegens__.type_conversion import (
+    FromOriginalObjCodegen,
+)
 
 if __name__ == '__main__':
     a = FromOriginalObjCodegen(
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     b.add_field(
         'hello',
         ListIdentifier(
-            is_nullable_list=[True, False],
+            is_optional_list=[True, False],
             wrapped=GeneratedGrapheneObjectIdentifier(
                 module=ModulePath('some.custom_graphene'),
                 name='hello',

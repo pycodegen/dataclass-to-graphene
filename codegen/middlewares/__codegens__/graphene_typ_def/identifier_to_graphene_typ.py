@@ -1,13 +1,25 @@
 from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
+from codegen.idenfitier.IdentifierWithImport import IdentifierWithImport
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
+from utils.lang import strip_margin
 
 
 def identifier_to_graphene_typ(
         identifier: BaseIdentifier,
         _graphene: str = 'graphene',
 ) -> str:
+    """
+    tries to convert python's non-nullable-by-default to graphene's nullable-by-default
+    @param identifier: Identifier
+    @param _graphene: (not required) only if using `import graphene as`
+    @return: graphene-type code string
+
+        ```
+        graphene.List(required=False, graphene.Int)
+        ```
+    """
     if isinstance(
             identifier,
             ListIdentifier,
@@ -31,43 +43,48 @@ def identifier_to_graphene_typ(
         actual_ident = identifier.wrapped
         head = ''.join([
             f'{_graphene}.List(required={not is_optional}, of_type='
-            for is_optional in identifier.is_nullable_list
+            for is_optional in identifier.is_optional_list
         ])
-        tail = ')' * len(identifier.is_nullable_list)
+        tail = ')' * len(identifier.is_optional_list)
         if not isinstance(actual_ident, OptionalIdentifier):
-            return f'{head}{_graphene}.NonNull({actual_ident.to_string()}){tail}'
-        return f'{head}{actual_ident.wrapped.to_string()}{tail}'
+            actual_ident_typ = __naive_ident_to_graphene_typ(
+                identifier=actual_ident,
+                _graphene=_graphene,
+            )
+            return f'{head}{_graphene}.NonNull({actual_ident_typ}){tail}'
+        actual_ident_wrapped_typ = __naive_ident_to_graphene_typ(
+            identifier=actual_ident.wrapped,
+            _graphene=_graphene,
+        )
+        return f'{head}{actual_ident_wrapped_typ}{tail}'
 
     if isinstance(
             identifier,
             OptionalIdentifier,
     ):
-        return f'{identifier.wrapped.to_string()}'
-    return f'{_graphene}.NonNullable({identifier.to_string()})'
+        return __naive_ident_to_graphene_typ(
+            identifier=identifier.wrapped,
+            _graphene=_graphene,
+        )
+    ident_as_is = __naive_ident_to_graphene_typ(
+        identifier=identifier,
+        _graphene=_graphene,
+    )
+    return f'{_graphene}.NonNullable({ident_as_is})'
 
 
-if __name__ == '__main__':
-    # TODO: make proper tests! (use python ast module)
-    print(
-        identifier_to_graphene_typ(int_identifier)
-    )
-    print(
-        identifier_to_graphene_typ(ListIdentifier(
-            is_nullable_list=[True, False],
-            wrapped=int_identifier,
-        ))
-    )
-
-    print(
-        identifier_to_graphene_typ(ListIdentifier(
-            is_nullable_list=[False],
-            wrapped=OptionalIdentifier(wrapped=float_identifier),
-        ))
-    )
-
-    print(
-        identifier_to_graphene_typ(ListIdentifier(
-            is_nullable_list=[False],
-            wrapped=int_identifier,
-        ))
-    )
+def __naive_ident_to_graphene_typ(
+        identifier: BaseIdentifier,
+        _graphene: str = 'graphene',
+) -> str:
+    """
+    "naively" converts identifier to graphene-type codestr
+    @param identifier:
+    @param _graphene:
+    @return:
+    """
+    if isinstance(
+            identifier,
+            IdentifierWithImport,
+    ):
+        return f'{identifier.module}.{identifier.name}'

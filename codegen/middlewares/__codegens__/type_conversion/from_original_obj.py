@@ -1,3 +1,4 @@
+import textwrap
 from dataclasses import dataclass, field
 from typing import Dict
 
@@ -37,7 +38,7 @@ class FromOriginalObjCodegen:
 
     def print_code(self):
         body = '\n'.join([
-            f'|        {key} = {value}'
+            f'{key} = {value}'
             for key, value
             in self.field_codestring_map.items()
         ])
@@ -46,7 +47,10 @@ class FromOriginalObjCodegen:
         |@classmethod
         |def _from_original(cls, {self._orig}):
         |    return cls(
-                {body}
+        |{textwrap.indent(
+            body, 
+            ' ' * 8,
+        )}
         |    )
         """)
         return func_string
