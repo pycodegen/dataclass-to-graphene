@@ -19,7 +19,8 @@ class User:
             User(
                 id=_id,
                 name=str(_id),
-                friends_ids=[]
+                friends_ids=[],
+                last_seen=None,
             )
             for _id in self.friends_ids
         ]

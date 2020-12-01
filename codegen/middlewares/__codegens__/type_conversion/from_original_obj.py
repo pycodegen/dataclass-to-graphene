@@ -23,7 +23,7 @@ class SomeGrapheneObject(graphene.Object):
 @dataclass
 class FromOriginalObjCodegen:
     field_codestring_map: Dict[str, str] = field(default_factory=dict)
-    _orig = str = 'original'
+    _orig: str = 'original'
 
     def add_field(
             self,

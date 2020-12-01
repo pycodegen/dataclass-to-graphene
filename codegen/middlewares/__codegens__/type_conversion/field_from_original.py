@@ -6,6 +6,9 @@ from codegen.idenfitier.__base__ import BaseIdentifier
 
 
 # TODO: can be generalized to include `to_original`...
+from codegen.middlewares.__codegens__.graphene_typ_def.identifier_to_graphene_typ import naive_ident_to_graphene_typ
+
+
 def field_from_original(
         field_code_str: str,
         # --> string to access the 'field'
@@ -21,7 +24,7 @@ def field_from_original(
         if isinstance(actual_ident, GeneratedGrapheneObjectIdentifier):
             list_dimension = len(field_ident.is_optional_list)
             conversion_func_head = 'map_list(' * list_dimension
-            conversion_func_body = f'{actual_ident.to_string()}._from_original'
+            conversion_func_body = f'{naive_ident_to_graphene_typ(actual_ident)}._from_original'
             conversion_func_tail = ')' * list_dimension
             conversion_func = \
                 conversion_func_head \
@@ -33,7 +36,7 @@ def field_from_original(
     if isinstance(field_ident, BaseBuiltinIdentifier):
         return field_code_str
     if isinstance(field_ident, GeneratedGrapheneObjectIdentifier):
-        return f'{field_ident.to_string()}._from_original({field_code_str})'
+        return f'{naive_ident_to_graphene_typ(field_ident)}._from_original({field_code_str})'
     raise RuntimeError(
         'Could not generate field for Identifier: ',
         field_ident,

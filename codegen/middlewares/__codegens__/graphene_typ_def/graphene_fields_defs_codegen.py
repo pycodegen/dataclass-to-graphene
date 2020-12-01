@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
+from codegen.idenfitier import PossibleIdentifiers
 from codegen.idenfitier.BuiltinIdentifiers import (
     int_identifier,
     float_identifier,
 )
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
-from codegen.idenfitier.__base__ import BaseIdentifier
 from .identifier_to_graphene_typ import (
     identifier_to_graphene_typ,
 )
@@ -21,7 +21,7 @@ class GrapheneFieldsDefCodegen:
     def add_field(
             self,
             name: str,
-            identifier: BaseIdentifier,
+            identifier: PossibleIdentifiers,
     ):
         self.field_codestring_map[name] = self.__get_codestring(
             name=name,
@@ -31,7 +31,7 @@ class GrapheneFieldsDefCodegen:
     def __get_codestring(
             self,
             name: str,
-            identifier: BaseIdentifier,
+            identifier: PossibleIdentifiers,
     ) -> str:
         graphql_type_str = identifier_to_graphene_typ(
             identifier=identifier,

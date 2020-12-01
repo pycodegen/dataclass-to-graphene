@@ -6,6 +6,7 @@ from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.middlewares.__codegens__.type_conversion import (
     FromOriginalObjCodegen,
 )
+from utils.lang.format_code import format_code
 
 if __name__ == '__main__':
     a = FromOriginalObjCodegen(
@@ -15,7 +16,7 @@ if __name__ == '__main__':
         },
     )
     print(a.print_code())
-    print('\n\n-------\n\n')
+    print('\n-------\n')
 
     b = FromOriginalObjCodegen()
     b.add_field(
@@ -24,8 +25,8 @@ if __name__ == '__main__':
             is_optional_list=[True, False],
             wrapped=GeneratedGrapheneObjectIdentifier(
                 module=ModulePath('some.custom_graphene'),
-                name='hello',
+                name='Hello',
             )
         )
     )
-    print(b.print_code())
+    print(format_code(b.print_code()))

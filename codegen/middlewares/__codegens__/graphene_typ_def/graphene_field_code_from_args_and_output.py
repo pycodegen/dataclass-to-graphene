@@ -3,10 +3,10 @@
 import textwrap
 from typing import Dict
 
+from codegen.idenfitier import PossibleIdentifiers
 from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
-from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.__codegens__.graphene_typ_def import (
+from codegen.middlewares.__codegens__.graphene_typ_def.identifier_to_graphene_typ import (
     identifier_to_graphene_typ,
 )
 from utils.lang.strip_margin import strip_margin
@@ -28,8 +28,8 @@ both require graphene field:
 
 
 def graphene_field_code_from_args_and_output(
-        args_idents: Dict[str, BaseIdentifier],
-        return_ident: BaseIdentifier,
+        args_idents: Dict[str, PossibleIdentifiers],
+        return_ident: PossibleIdentifiers,
         _g: str = 'graphene',
 ) -> str:
     args_codes = {

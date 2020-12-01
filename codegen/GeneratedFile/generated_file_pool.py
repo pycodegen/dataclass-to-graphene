@@ -13,7 +13,7 @@ def get_generated_module_path(
         src_module_path: ModulePath,
 ) :
     return GeneratedModulePath(
-        f'{root_module_path}.{src_module_path}'
+        ModulePath(f'{root_module_path}.{src_module_path}')
     )
 
 

@@ -25,7 +25,7 @@ from codegen.BaseCodegen import BaseCodegen
 from codegen.GeneratedFile.generated_file_pool import GeneratedFilePool, get_generated_module_path, get_generated_file
 from codegen.ModulePath import ModulePath
 from codegen.ModulePath.RootModulePath import RootModulePath
-from codegen.idenfitier.__base__ import BaseIdentifier
+from codegen.idenfitier import PossibleIdentifiers
 from codegen.middleware_flags import BaseMiddlewareFlag, is_output, is_input
 from codegen.middlewares.__base__ import BaseMiddleware
 from codegen.middlewares.__utils__.ident_to_valid_python_name import ident_to_valid_python_name
@@ -55,7 +55,7 @@ class OutputUnionMiddleware(BaseMiddleware):
             node: NodeType,
             codegen: BaseCodegen,
             flags: Set[BaseMiddlewareFlag],
-    ) -> Optional[BaseIdentifier]:
+    ) -> Optional[PossibleIdentifiers]:
         if not isinstance(node, TypeOR) \
                 or not flags.__contains__(is_output) \
                 or flags.__contains__(is_input):

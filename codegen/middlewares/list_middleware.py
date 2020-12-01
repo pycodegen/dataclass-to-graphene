@@ -49,6 +49,7 @@ def process_list_node(
             is_nullable_list=is_nullable_list,
             node=node.typ,
             codegen=codegen,
+            flags=flags,
         )
     if isinstance(node, TypeOR) and is_optional_typeor(node):
         node_without_optional = typeor_discard_optional(node)
@@ -58,6 +59,7 @@ def process_list_node(
                 is_nullable_list=is_nullable_list,
                 node=node_without_optional.typ,
                 codegen=codegen,
+                flags=flags,
             )
     # not: List or Optional[List]
     identifier = codegen._process(node, flags=flags)

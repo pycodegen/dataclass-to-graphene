@@ -7,7 +7,7 @@ from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGraphe
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.__codegens__.type_conversion import field_from_original
+from codegen.middlewares.__codegens__.type_conversion.field_from_original import field_from_original
 from utils.lang.strip_margin import strip_margin
 
 

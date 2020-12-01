@@ -1,13 +1,11 @@
-from codegen.idenfitier.BuiltinIdentifiers import int_identifier, float_identifier
+from codegen.idenfitier import PossibleIdentifiers
 from codegen.idenfitier.IdentifierWithImport import IdentifierWithImport
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
-from codegen.idenfitier.__base__ import BaseIdentifier
-from utils.lang import strip_margin
 
 
 def identifier_to_graphene_typ(
-        identifier: BaseIdentifier,
+        identifier: PossibleIdentifiers,
         _graphene: str = 'graphene',
 ) -> str:
     """
@@ -47,12 +45,12 @@ def identifier_to_graphene_typ(
         ])
         tail = ')' * len(identifier.is_optional_list)
         if not isinstance(actual_ident, OptionalIdentifier):
-            actual_ident_typ = __naive_ident_to_graphene_typ(
+            actual_ident_typ = naive_ident_to_graphene_typ(
                 identifier=actual_ident,
                 _graphene=_graphene,
             )
             return f'{head}{_graphene}.NonNull({actual_ident_typ}){tail}'
-        actual_ident_wrapped_typ = __naive_ident_to_graphene_typ(
+        actual_ident_wrapped_typ = naive_ident_to_graphene_typ(
             identifier=actual_ident.wrapped,
             _graphene=_graphene,
         )
@@ -62,19 +60,19 @@ def identifier_to_graphene_typ(
             identifier,
             OptionalIdentifier,
     ):
-        return __naive_ident_to_graphene_typ(
+        return naive_ident_to_graphene_typ(
             identifier=identifier.wrapped,
             _graphene=_graphene,
         )
-    ident_as_is = __naive_ident_to_graphene_typ(
+    ident_as_is = naive_ident_to_graphene_typ(
         identifier=identifier,
         _graphene=_graphene,
     )
     return f'{_graphene}.NonNullable({ident_as_is})'
 
 
-def __naive_ident_to_graphene_typ(
-        identifier: BaseIdentifier,
+def naive_ident_to_graphene_typ(
+        identifier: IdentifierWithImport,
         _graphene: str = 'graphene',
 ) -> str:
     """

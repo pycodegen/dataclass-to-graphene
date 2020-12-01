@@ -1,6 +1,8 @@
 from tabulate import tabulate
 
+from codegen.ModulePath import ModulePath
 from codegen.idenfitier.BuiltinIdentifiers import float_identifier, int_identifier
+from codegen.idenfitier.IdentifierWithImport import IdentifierWithImport
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.middlewares.__codegens__.graphene_typ_def import identifier_to_graphene_typ
@@ -63,6 +65,21 @@ if __name__ == '__main__':
             ),
         )
     ]], tablefmt="grid"))
+
+    print(tabulate([[
+        format_code(strip_margin('''
+            |IdentifierWithImport(
+            |    module='hello.module',
+            |    name='ident_name_here',
+            |)
+        ''')),
+        format_code(identifier_to_graphene_typ(
+            IdentifierWithImport(
+                module = ModulePath('hello.module'),
+                name = 'ident_name_here',
+            )
+        ))
+    ]]))
     print('')
 
 # >>> from tabulate import tabulate

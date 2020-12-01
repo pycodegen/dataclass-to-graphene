@@ -2,6 +2,7 @@ venv*
 .idea
 .vscode
 .mypy_cache
+.pytype
 __pycache__
 
 old_stuff

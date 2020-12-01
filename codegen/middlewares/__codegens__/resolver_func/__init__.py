@@ -45,7 +45,7 @@ def process_resolver_funcs(
     raw_resolvers = get_resolver_funcs(maybe_resolvers)
     for name, raw_resolver in raw_resolvers.items():
         # maybe: get identifiers for resolvers here?
-
+        pass
 
     # return resolver_codes
 

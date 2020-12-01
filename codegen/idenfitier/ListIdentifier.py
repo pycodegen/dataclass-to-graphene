@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, Union
 
+from codegen.idenfitier.IdentifierWithImport import IdentifierWithImport
+from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier, WrappedIdentifier
 
 
@@ -20,7 +22,7 @@ class ListIdentifier(WrappedIdentifier):
     ---   -----------
     """
     is_optional_list: List[bool]
-    wrapped: BaseIdentifier
+    wrapped: Union[IdentifierWithImport, OptionalIdentifier]
 
     def __init__(
             self,

@@ -1,9 +1,9 @@
 import abc
-
-from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
 from typing import Set
 
-from codegen.idenfitier.__base__ import BaseIdentifier
+from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
+
+from codegen.idenfitier import PossibleIdentifiers
 from codegen.middleware_flags.__base__ import BaseMiddlewareFlag
 
 
@@ -22,5 +22,5 @@ class BaseCodegen(metaclass=abc.ABCMeta):
             self,
             node: NodeType,
             flags: Set[BaseMiddlewareFlag],
-    ) -> BaseIdentifier:
+    ) -> PossibleIdentifiers:
         ...
