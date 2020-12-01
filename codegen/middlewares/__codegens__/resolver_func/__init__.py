@@ -3,12 +3,13 @@ from typing import Dict, Set
 from py_type_extractor.type_extractor.nodes.FunctionFound import FunctionFound
 
 from codegen.BaseCodegen import BaseCodegen
-from codegen.idenfitier.__base__ import BaseIdentifier
+from codegen.idenfitier import PossibleIdentifiers
 # from .resolver_fn_field_code import graphene_field_code_from_args_and_output
 # from codegen.middlewares.__utils__.resolver_func_codegens.resolver_fn_impl_code import \
 #     get_resolver_fn_impl_code
 from codegen.middleware_flags import BaseMiddlewareFlag, is_input, is_output
-from codegen.middlewares.__codegens__.graphene_typ_def.graphene_field_code_from_args_and_output import graphene_field_code_from_args_and_output
+from codegen.middlewares.__codegens__.graphene_typ_def.graphene_field_code_from_args_and_output import \
+    graphene_field_code_from_args_and_output
 from .resolver_fn_impl_code import get_resolver_fn_impl_code
 
 
@@ -65,7 +66,7 @@ def process_resolver_func(
     )
 
     # TODO: filter-out 'context' or any other 'special' args
-    args_idents: Dict[str, BaseIdentifier] = {
+    args_idents: Dict[str, PossibleIdentifiers] = {
         args_name: codegen._process(
             node=args_node,
             flags=input_flags,

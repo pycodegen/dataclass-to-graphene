@@ -4,12 +4,8 @@ from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
 from py_type_extractor.type_extractor.type_extractor import TypeExtractor
 
 from codegen.BaseCodegen import BaseCodegen
-from codegen.GeneratedFile import (
-    GeneratedFile, GeneratedQueriesFile,
-)
 from codegen.GeneratedFile.generated_file_pool import GeneratedFilePool
 from codegen.ModulePath import ModulePath
-from codegen.GeneratedFile.MutationsModule import GeneratedMutationsFile
 from codegen.ModulePath.RootModulePath import RootModulePath
 from codegen.extractor_flags.is_mutation import is_mutation_flag
 from codegen.extractor_flags.is_query import is_query_flag

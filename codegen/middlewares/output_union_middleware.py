@@ -28,9 +28,13 @@ from codegen.ModulePath.RootModulePath import RootModulePath
 from codegen.idenfitier import PossibleIdentifiers
 from codegen.middleware_flags import BaseMiddlewareFlag, is_output, is_input
 from codegen.middlewares.__base__ import BaseMiddleware
+from codegen.middlewares.__codegens__.graphene_typ_def.identifier_to_graphene_typ import (
+    identifier_to_graphene_typ,
+)
 from codegen.middlewares.__utils__.ident_to_valid_python_name import ident_to_valid_python_name
 from codegen.middlewares.__utils__.process_import import process_import
 from utils.lang.strip_margin import strip_margin
+from utils.optional_node_utils import is_optional_typeor
 
 
 class OutputUnionMiddleware(BaseMiddleware):
@@ -60,6 +64,9 @@ class OutputUnionMiddleware(BaseMiddleware):
                 or not flags.__contains__(is_output) \
                 or flags.__contains__(is_input):
             return None
+        if is_optional_typeor(node):
+            raise RuntimeError('got Optional[A] in output_union_middleware', node)
+
         idents = [
             codegen._process(i, flags=flags)
             for i in node.nodes
@@ -76,7 +83,7 @@ class OutputUnionMiddleware(BaseMiddleware):
             for ident in idents
         ])
 
-        idents_meta_types_code = '\n'.join([f'{a.to_string()},' for a in idents])
+        idents_meta_types_code = '\n'.join([f'{identifier_to_graphene_typ(a)},' for a in idents])
 
         code_to_write = strip_margin(f"""
         |class {union_name}(graphene.Union):
