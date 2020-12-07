@@ -7,7 +7,7 @@ from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGraphe
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OptionalIdentifier import OptionalIdentifier
 from codegen.idenfitier.__base__ import BaseIdentifier
-from codegen.middlewares.__codegens__.type_conversion.field_from_original import field_from_original
+from codegen.middlewares.__codegens__.type_conversion.gen_field_convertor_code import gen_field_convertor_code
 from utils.lang.strip_margin import strip_margin
 
 
@@ -27,9 +27,10 @@ def get_resolver_fn_impl_code(
          in args_idents.keys()]
     )
     # _from_original for return_ident...
-    return_value_code_str = field_from_original(
+    return_value_code_str = gen_field_convertor_code(
         field_code_str='result_original',
         field_ident=return_ident,
+        func_str='_from_original',
     )
     return strip_margin(
         f"""

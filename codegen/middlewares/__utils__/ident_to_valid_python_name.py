@@ -15,6 +15,8 @@ def ident_to_valid_python_name(
     ident_str = identifier_to_graphene_typ(ident)
     # 1. replace '.' to '_'
     return ident_str\
+        .replace('(', '_')\
+        .replace(')', '_')\
         .replace('.', '_')\
         .replace('[', '_')\
         .replace(']', '_')

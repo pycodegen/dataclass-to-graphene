@@ -49,6 +49,7 @@ class ObjectMiddleware(BaseMiddleware):
             generated_file_pool=self.generated_file_pool,
             module_path=generated_module_path,
         )
+        generated_file.add_import(src_module_path)
         to_original_type_codegen = ToOriginalObjCodegen(
             get_original_obj_ident(node)
         )
@@ -76,10 +77,10 @@ class ObjectMiddleware(BaseMiddleware):
 
         # TODO: resolvers
         # resolvers
-        # resolvers = process_resolver_funcs(node.methods)
+        # resolvers = process_resolver_funcs(typeor_node.methods)
 
         generated_file.add_code(strip_margin(f"""
-        |class {node.name}(graphene.Object):
+        |class {node.name}(graphene.ObjectType):
         |{textwrap.indent(graphene_fields_def_codegen.generate_code(), '    ')}
         |{textwrap.indent(to_original_type_codegen.print_code(), '    ')}
         |{textwrap.indent(from_original_type_codegen.print_code(), '    ')}

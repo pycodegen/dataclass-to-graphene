@@ -14,4 +14,6 @@ def process_import(
             return
     if isinstance(identifier, IdentifierWithImport):
         generated_file.add_import(identifier.module)
+        return
+    print('no import for ', identifier)
 

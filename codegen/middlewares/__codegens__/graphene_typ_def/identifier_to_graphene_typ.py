@@ -68,7 +68,7 @@ def identifier_to_graphene_typ(
         identifier=identifier,
         _graphene=_graphene,
     )
-    return f'{_graphene}.NonNullable({ident_as_is})'
+    return f'{_graphene}.NonNull({ident_as_is})'
 
 
 def naive_ident_to_graphene_typ(

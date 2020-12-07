@@ -4,5 +4,7 @@ venv*
 .mypy_cache
 .pytype
 __pycache__
+sample_graphql_generated
+sample/generated
 
 old_stuff

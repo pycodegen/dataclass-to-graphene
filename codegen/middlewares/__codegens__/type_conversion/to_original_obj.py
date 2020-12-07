@@ -2,12 +2,13 @@ import textwrap
 from dataclasses import dataclass, field
 from typing import Dict
 
-from codegen.idenfitier import PossibleIdentifiers
+from codegen.idenfitier import PossibleIdentifiers, OptionalIdentifier
 from codegen.idenfitier.BuiltinIdentifiers import BaseBuiltinIdentifier
 from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGrapheneObjectIdentifier
 from codegen.idenfitier.ListIdentifier import ListIdentifier
 from codegen.idenfitier.OriginalObjIdentifier import OriginalObjIdentifier
 from codegen.middlewares.__codegens__.graphene_typ_def.identifier_to_graphene_typ import naive_ident_to_graphene_typ
+from codegen.middlewares.__codegens__.type_conversion import gen_field_convertor_code
 from utils.lang.strip_margin import strip_margin
 
 
@@ -21,54 +22,23 @@ class ToOriginalObjCodegen:
             name: str,
             identifier: PossibleIdentifiers,
     ):
-        self.field_codestring_map[name] = self.__get_codestring(
-            name=name,
-            identifier=identifier,
+        self.field_codestring_map[name] = gen_field_convertor_code(
+            field_code_str=f'self.{name}',
+            field_ident=identifier,
+            func_str='_to_original'
         )
-
-    def __get_codestring(
-            self,
-            name: str,
-            identifier: PossibleIdentifiers,
-    ) -> str:
-        if isinstance(identifier, ListIdentifier):
-            actual_identifier = identifier.wrapped
-            if isinstance(
-                    actual_identifier,
-                    BaseBuiltinIdentifier,
-            ):
-                return f'self.{name}'
-            if isinstance(
-                    actual_identifier,
-                    GeneratedGrapheneObjectIdentifier,
-            ):
-                list_dimension = len(identifier.is_optional_list)
-                conversion_func_head = 'map_list(' * list_dimension
-                conversion_func_body = f'{naive_ident_to_graphene_typ(actual_identifier)}._to_original'
-                conversion_func_tail = ')' * list_dimension
-                conversion_func = \
-                    conversion_func_head \
-                    + conversion_func_body \
-                    + conversion_func_tail
-                return f'{conversion_func}(self.{name})'
-        if isinstance(identifier, BaseBuiltinIdentifier):
-            return f'self.{name}'
-        if isinstance(
-                identifier,
-                GeneratedGrapheneObjectIdentifier,
-        ):
-            return f'{naive_ident_to_graphene_typ(identifier)}._to_original(self.{name})'
-        raise RuntimeError('__get_codestring failed for ', identifier)
 
     def print_code(self):
         body = '\n'.join([
-            f'{key} = {value}'
+            f'{key}={value},'
             for key, value
-            in self.field_codestring_map
+            in self.field_codestring_map.items()
         ])
+        # TODO: maybe use something else below?
+        original_typ_name = f'{self.original_type_identifier.module}.{self.original_type_identifier.name}'
         func_string = strip_margin(f"""
         |def _to_original(self):
-        |    return {self.original_type_identifier}(
+        |    return {original_typ_name}(
         |{textwrap.indent(body, ' ' * 8)}
         |    )
         |""")

@@ -4,7 +4,7 @@ from typing import Dict
 
 from codegen.idenfitier.__base__ import BaseIdentifier
 from utils.lang.strip_margin import strip_margin
-from .field_from_original import field_from_original
+from .gen_field_convertor_code import gen_field_convertor_code
 
 """
 generated output:
@@ -30,15 +30,16 @@ class FromOriginalObjCodegen:
             name: str,
             identifier: BaseIdentifier,
     ):
-        self.field_codestring_map[name] = field_from_original(
+        self.field_codestring_map[name] = gen_field_convertor_code(
             field_code_str=f'{self._orig}.{name}',
             field_ident=identifier,
+            func_str='_from_original'
         )
 
 
     def print_code(self):
         body = '\n'.join([
-            f'{key} = {value}'
+            f'{key}={value},'
             for key, value
             in self.field_codestring_map.items()
         ])

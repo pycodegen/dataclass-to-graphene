@@ -1,3 +1,3 @@
-from .field_from_original import field_from_original
+from .gen_field_convertor_code import gen_field_convertor_code
 from .from_original_obj import FromOriginalObjCodegen
 from .to_original_obj import ToOriginalObjCodegen

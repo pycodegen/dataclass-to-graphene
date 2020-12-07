@@ -9,12 +9,13 @@ from codegen.idenfitier.__base__ import BaseIdentifier
 from codegen.middlewares.__codegens__.graphene_typ_def.identifier_to_graphene_typ import naive_ident_to_graphene_typ
 
 
-def field_from_original(
+def gen_field_convertor_code(
         field_code_str: str,
         # --> string to access the 'field'
         #       eg. 'original.user'
         #
         field_ident: BaseIdentifier,
+        func_str: str,  # '_from_original' or '_to_original'
 ) -> str:
     # hope python gets pattern-matching...
     if isinstance(field_ident, ListIdentifier):
@@ -24,19 +25,24 @@ def field_from_original(
         if isinstance(actual_ident, GeneratedGrapheneObjectIdentifier):
             list_dimension = len(field_ident.is_optional_list)
             conversion_func_head = 'map_list(' * list_dimension
-            conversion_func_body = f'{naive_ident_to_graphene_typ(actual_ident)}._from_original'
+            conversion_func_body = f'{naive_ident_to_graphene_typ(actual_ident)}.{func_str}'
             conversion_func_tail = ')' * list_dimension
             conversion_func = \
                 conversion_func_head \
                 + conversion_func_body \
                 + conversion_func_tail
             return f'{conversion_func}({field_code_str})'
-    if isinstance(field_ident, OptionalIdentifier):
-        field_ident = field_ident.wrapped
-    if isinstance(field_ident, BaseBuiltinIdentifier):
+
+    if isinstance(
+            field_ident,
+            BaseBuiltinIdentifier,
+    ) or isinstance(
+        field_ident,
+        OptionalIdentifier,
+    ):
         return field_code_str
     if isinstance(field_ident, GeneratedGrapheneObjectIdentifier):
-        return f'{naive_ident_to_graphene_typ(field_ident)}._from_original({field_code_str})'
+        return f'{naive_ident_to_graphene_typ(field_ident)}.{func_str}({field_code_str})'
     raise RuntimeError(
         'Could not generate field for Identifier: ',
         field_ident,

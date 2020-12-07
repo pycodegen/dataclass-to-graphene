@@ -22,5 +22,10 @@ class BaseCodegen(metaclass=abc.ABCMeta):
             self,
             node: NodeType,
             flags: Set[BaseMiddlewareFlag],
-    ) -> PossibleIdentifiers:
-        ...
+    ) -> PossibleIdentifiers: ...
+
+    @abc.abstractmethod
+    def check_context_typ(
+            self,
+            context_node: NodeType,
+    ) -> bool: ...

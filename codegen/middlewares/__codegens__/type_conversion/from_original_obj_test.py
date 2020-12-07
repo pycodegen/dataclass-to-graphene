@@ -1,4 +1,6 @@
 from codegen.ModulePath import ModulePath
+from codegen.idenfitier import OptionalIdentifier
+from codegen.idenfitier.BuiltinIdentifiers import int_identifier
 from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import (
     GeneratedGrapheneObjectIdentifier,
 )
@@ -27,6 +29,12 @@ if __name__ == '__main__':
                 module=ModulePath('some.custom_graphene'),
                 name='Hello',
             )
+        )
+    )
+    b.add_field(
+        'some_optional',
+        OptionalIdentifier(
+            wrapped=int_identifier,
         )
     )
     print(format_code(b.print_code()))

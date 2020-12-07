@@ -26,6 +26,7 @@ from codegen.GeneratedFile.generated_file_pool import GeneratedFilePool, get_gen
 from codegen.ModulePath import ModulePath
 from codegen.ModulePath.RootModulePath import RootModulePath
 from codegen.idenfitier import PossibleIdentifiers
+from codegen.idenfitier.GeneratedGrapheneObjectIdentifier import GeneratedGrapheneObjectIdentifier
 from codegen.middleware_flags import BaseMiddlewareFlag, is_output, is_input
 from codegen.middlewares.__base__ import BaseMiddleware
 from codegen.middlewares.__codegens__.graphene_typ_def.identifier_to_graphene_typ import (
@@ -53,6 +54,7 @@ class OutputUnionMiddleware(BaseMiddleware):
             generated_file_pool=generated_file_pool,
             module_path=self.to_write_module,
         )
+        self.to_write_file.add_import(ModulePath('graphene'))
 
     def process(
             self,
@@ -78,7 +80,7 @@ class OutputUnionMiddleware(BaseMiddleware):
             )
 
         # heck ugly but really un-likely to overlap?
-        union_name = '_0_UNION_WITH_0_'.join([
+        union_name = '__UNION_WITH__'.join([
             ident_to_valid_python_name(ident)
             for ident in idents
         ])
@@ -94,3 +96,8 @@ class OutputUnionMiddleware(BaseMiddleware):
         |
         |""")
         self.to_write_file.add_code(code_to_write)
+
+        return GeneratedGrapheneObjectIdentifier(
+            module=self.to_write_module,
+            name=union_name,
+        )

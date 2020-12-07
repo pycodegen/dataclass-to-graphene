@@ -1,8 +1,9 @@
-from typing import Optional, List, Tuple, Set
+from typing import Optional, List, Tuple, Set, Union
 
 from py_type_extractor.type_extractor.nodes.BaseNodeType import NodeType
 from py_type_extractor.type_extractor.nodes.ListFound import ListFound
 from py_type_extractor.type_extractor.nodes.TypeOR import TypeOR
+from py_type_extractor.type_extractor.nodes.utils.get_self import get_self
 
 from codegen.BaseCodegen import BaseCodegen
 from codegen.idenfitier.ListIdentifier import ListIdentifier
@@ -19,9 +20,10 @@ class ListMiddleware(BaseMiddleware):
             codegen: BaseCodegen,
             flags: Set[BaseMiddlewareFlag],
     ) -> Optional[BaseIdentifier]:
-        if not isinstance(node, ListFound) and not (
-                isinstance(node, TypeOR)
-                and is_optional_typeor(node)
+        if not isinstance(node, ListFound) \
+          and not (
+            isinstance(node, TypeOR)
+            and is_optional_typeor(node)
         ):
             return None
 
@@ -39,7 +41,7 @@ class ListMiddleware(BaseMiddleware):
 
 def process_list_node(
         is_nullable_list: List[bool],
-        node: NodeType,
+        node: Union[ListFound, TypeOR],
         codegen: BaseCodegen,
         flags: Set[BaseMiddlewareFlag],
 ) -> Tuple[List[bool], BaseIdentifier]:
@@ -62,5 +64,8 @@ def process_list_node(
                 flags=flags,
             )
     # not: List or Optional[List]
-    identifier = codegen._process(node, flags=flags)
+    try:
+        identifier = codegen._process(get_self(node), flags=flags)
+    except Exception as e:
+        print(e)
     return (is_nullable_list, identifier)

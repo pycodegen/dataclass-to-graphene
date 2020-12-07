@@ -1,2 +1,6 @@
-class AppContext:
-    pass
+from dataclasses import dataclass
+
+
+@dataclass
+class SampleAppContext:
+    a: int
